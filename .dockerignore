@@ -1,0 +1,14 @@
+target
+uploads
+.git
+.gitignore
+README.md
+*.md
+*.log
+*.tmp
+*.bak
+*.swp
+*.iml
+*.class
+*.jar
+*.war

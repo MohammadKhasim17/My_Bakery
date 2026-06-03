@@ -56,6 +56,37 @@ Then open:
 - Public site: `http://localhost:8080/`
 - Admin panel: `http://localhost:8080/admin/products`
 
+## Render Deployment
+
+This project includes Render deployment support using `Dockerfile` and `render.yaml`.
+
+1. Push this repository to GitHub.
+2. Create a new Render web service and connect your GitHub repo.
+3. Choose "Docker" as the environment and use the `Dockerfile` in the repository root.
+4. Configure the following environment variables on Render:
+   - `SPRING_DATASOURCE_URL`
+   - `SPRING_DATASOURCE_USERNAME`
+   - `SPRING_DATASOURCE_PASSWORD`
+   - `SPRING_DATASOURCE_DRIVER` (for example `org.postgresql.Driver` if using Render Postgres)
+
+Render will set `PORT` automatically, and the application will use it.
+
+### Recommended cloud database setup
+
+For a free Render deployment, use the Render PostgreSQL add-on or another managed database provider. Then set:
+
+- `SPRING_DATASOURCE_URL` to the database URL provided by your service
+- `SPRING_DATASOURCE_USERNAME` and `SPRING_DATASOURCE_PASSWORD` accordingly
+- `SPRING_DATASOURCE_DRIVER` to `org.postgresql.Driver`
+
+If you prefer to use MySQL on Render, set the driver to `com.mysql.cj.jdbc.Driver` and configure a compatible MySQL database.
+
+## Notes
+
+- Uploaded product images are stored in the app's runtime `uploads/` folder.
+- On Render, runtime storage is ephemeral, so image uploads may not persist across deploys or service restarts.
+- For a production-ready deployment, consider adding cloud file storage for uploaded images.
+
 ## Admin Product Image Upload
 
 - Use the admin form to add or update products
