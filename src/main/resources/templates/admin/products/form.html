@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${isEdit} ? 'Edit Product' : 'Add Product'">Product Form</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+    <header class="admin-header">
+        <div class="container">
+            <div class="admin-header-row">
+                <div>
+                    <h1>Admin Panel</h1>
+                    <p class="subtitle" th:text="${isEdit} ? 'Edit Product' : 'Add New Product'">Form</p>
+                </div>
+                <a th:href="@{/}" class="btn btn-outline">← View Public Site</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <a th:href="@{/admin/products}" class="back-link">&larr; Back to product list</a>
+
+        <!--
+            th:object binds the form to the "product" model attribute.
+            th:field generates name/id and binds each input to a Product property.
+            The "available" checkbox controls whether the product appears on the public site.
+        -->
+        <form th:object="${product}"
+              th:action="${isEdit} ? @{/admin/products/{id}(id=${product.id})} : @{/admin/products}"
+              method="post"
+              enctype="multipart/form-data"
+              class="product-form">
+
+            <div class="form-group">
+                <label for="name">Product Name *</label>
+                <input type="text" id="name" th:field="*{name}" placeholder="e.g. Chocolate Croissant">
+                <span class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" th:field="*{description}" rows="3"
+                          placeholder="Shown on the public menu page"></textarea>
+                <span class="error" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></span>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="price">Price ($) *</label>
+                    <input type="number" id="price" th:field="*{price}" step="0.01" min="0" placeholder="0.00">
+                    <span class="error" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="category">Category *</label>
+                    <select id="category" th:field="*{category}">
+                        <option value="">-- Select category --</option>
+                        <option value="Bread">Bread</option>
+                        <option value="Pastry">Pastry</option>
+                        <option value="Cake">Cake</option>
+                        <option value="Cookie">Cookie</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <span class="error" th:if="${#fields.hasErrors('category')}" th:errors="*{category}"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <input type="hidden" th:field="*{imagePath}">
+                <label for="imageFile">Product Image</label>
+                <input type="file" id="imageFile" name="imageFile" accept="image/*">
+                <span class="hint">Upload a photo to show on the public product card.</span>
+                <div th:if="${product.imagePath}" class="image-preview">
+                    <img th:src="${product.imagePath}" alt="Current product image">
+                </div>
+            </div>
+
+            <div class="form-group checkbox-group">
+                <label>
+                    <input type="checkbox" th:field="*{available}">
+                    Show on public menu (available for sale)
+                </label>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary"
+                        th:text="${isEdit} ? 'Update Product' : 'Save Product'">Save</button>
+                <a th:href="@{/admin/products}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>My Bakery Admin &copy; 2026</p>
+        </div>
+    </footer>
+</body>
+</html>

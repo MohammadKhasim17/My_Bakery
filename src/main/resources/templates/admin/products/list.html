@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin — Product Management</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+    <!-- Admin header — clearly distinct from the public site -->
+    <header class="admin-header">
+        <div class="container">
+            <div class="admin-header-row">
+                <div>
+                    <h1>Admin Panel</h1>
+                    <p class="subtitle">Manage bakery products</p>
+                </div>
+                <a th:href="@{/}" class="btn btn-outline">← View Public Site</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+
+        <div class="toolbar">
+            <h2>All Products</h2>
+            <a th:href="@{/admin/products/new}" class="btn btn-primary">+ Add Product</a>
+        </div>
+
+        <div th:if="${#lists.isEmpty(products)}" class="empty-state">
+            <p>No products yet. Click "Add Product" to create your first item.</p>
+        </div>
+
+        <table th:unless="${#lists.isEmpty(products)}" class="product-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Image</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Available</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="product : ${products}">
+                    <td th:text="${product.id}">1</td>
+                    <td>
+                        <div th:if="${product.imagePath}" class="table-thumb">
+                            <img th:src="${product.imagePath}" alt="Product image">
+                        </div>
+                        <span th:if="${product.imagePath == null}" class="text-muted">No image</span>
+                    </td>
+                    <td>
+                        <strong th:text="${product.name}">Croissant</strong>
+                        <br>
+                        <small th:text="${product.description}" class="text-muted">Description</small>
+                    </td>
+                    <td><span class="badge" th:text="${product.category}">Pastry</span></td>
+                    <td th:text="${'₹' + #numbers.formatDecimal(product.price, 1, 2)}">₹3.50</td>
+                    <td>
+                        <span th:class="${product.available} ? 'status available' : 'status unavailable'"
+                              th:text="${product.available} ? 'Yes' : 'No'">Yes</span>
+                    </td>
+                    <td class="actions">
+                        <a th:href="@{/admin/products/{id}/edit(id=${product.id})}" class="btn btn-sm btn-secondary">Edit</a>
+                        <form th:action="@{/admin/products/{id}/delete(id=${product.id})}" method="post" class="inline-form"
+                              onsubmit="return confirm('Delete this product?');">
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <section class="api-info">
+            <h3>REST API Endpoints</h3>
+            <ul>
+                <li><code>GET    /api/products</code> — List all products</li>
+                <li><code>GET    /api/products/{id}</code> — Get one product</li>
+                <li><code>POST   /api/products</code> — Create a product (JSON body)</li>
+                <li><code>PUT    /api/products/{id}</code> — Update a product</li>
+                <li><code>DELETE /api/products/{id}</code> — Delete a product</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>My Bakery Admin &copy; 2026</p>
+        </div>
+    </footer>
+</body>
+</html>

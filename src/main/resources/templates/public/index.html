@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="My Bakery — Fresh bread, pastries, and cakes baked daily with love.">
+    <title>My Bakery — Fresh Baked Daily</title>
+    <link rel="stylesheet" th:href="@{/css/storefront.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Top navigation bar -->
+    <nav class="nav">
+        <div class="nav-inner container-wide">
+            <a href="#" class="nav-logo">🥐 My Bakery</a>
+            <ul class="nav-links">
+                <li><a href="#menu">Our Menu</a></li>
+                <li><a href="#about">About Us</a></li>
+                <li><a href="#visit">Visit Us</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero — first thing visitors see -->
+    <section class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content container-wide">
+            <p class="hero-tag">Est. 2024 · King's Bakery</p>
+            <h1>Fresh from the oven,<br>made with love</h1>
+            <p class="hero-desc">
+                Handcrafted breads, buttery pastries, and celebration cakes —
+                baked fresh every morning using the finest ingredients.
+            </p>
+            <a href="#menu" class="btn-hero">Browse Our Menu</a>
+        </div>
+    </section>
+
+    <!-- Featured bakery image -->
+    <section class="hero-highlight">
+        <div class="container-wide hero-highlight-grid">
+            <div class="hero-highlight-image">
+                <img th:src="@{/images/Bakery.jpeg}" alt="Fresh bakery display" />
+            </div>
+            <div class="hero-highlight-copy">
+                <span class="section-label">Featured Bake</span>
+                <h2>Warm, inviting, and baked fresh every morning</h2>
+                <p class="section-sub">Experience the aroma of golden crusts and buttery layers with every visit.</p>
+                <p>Our bakery photo captures the heart of My Bakery: handcrafted goods made from quality ingredients and served with a smile.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- About the bakery -->
+    <section id="about" class="section about">
+        <div class="container-wide about-grid">
+            <div class="about-text">
+                <span class="section-label">Our Story</span>
+                <h2>A neighborhood bakery with a passion for quality</h2>
+                <p>
+                    At My Bakery, we believe great baking starts with simple, honest ingredients
+                    and time-honored techniques. Every loaf is proofed slowly, every croissant
+                    laminated by hand, and every cake decorated with care.
+                </p>
+                <p>
+                    Whether you're picking up your morning sourdough or ordering a cake for
+                    a special occasion, we're here to make your day a little sweeter.
+                </p>
+            </div>
+            <div class="about-features">
+                <div class="feature-card">
+                    <span class="feature-icon">🌾</span>
+                    <h3>Quality Ingredients</h3>
+                    <p>Locally sourced flour, real butter, and fresh seasonal produce.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">👨‍🍳</span>
+                    <h3>Baked Daily</h3>
+                    <p>Nothing sits on the shelf overnight — freshness you can taste.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">❤️</span>
+                    <h3>Made with Love</h3>
+                    <p>Family recipes and artisan craft in every bite.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Product menu — only available items from the database -->
+    <section id="menu" class="section menu">
+        <div class="container-wide">
+            <div class="section-header">
+                <span class="section-label">Today's Selection</span>
+                <h2>Our Menu</h2>
+                <p class="section-sub">Fresh items available in the bakery right now</p>
+            </div>
+
+            <!-- Empty state when admin hasn't marked any products available -->
+            <div th:if="${#lists.isEmpty(products)}" class="menu-empty">
+                <p>Our bakers are preparing something delicious. Check back soon!</p>
+            </div>
+
+            <!-- Products grouped by category (Bread, Pastry, Cake, etc.) -->
+            <div th:each="entry : ${productsByCategory}" class="menu-category">
+                <h3 class="category-title">
+                    <span th:switch="${entry.key}">
+                        <span th:case="'Bread'">🍞</span>
+                        <span th:case="'Pastry'">🥐</span>
+                        <span th:case="'Cake'">🎂</span>
+                        <span th:case="'Cookie'">🍪</span>
+                        <span th:case="*">🧁</span>
+                    </span>
+                    <span th:text="${entry.key}">Category</span>
+                </h3>
+
+                <div class="product-grid">
+                    <article th:each="product : ${entry.value}" class="product-card">
+                        <div th:if="${product.imagePath}" class="product-card-image">
+                            <img th:src="${product.imagePath}" alt="Product image">
+                        </div>
+                        <div class="product-card-body">
+                            <span class="product-category" th:text="${product.category}">Pastry</span>
+                            <h4 th:text="${product.name}">Product Name</h4>
+                            <p class="product-desc" th:text="${product.description ?: 'Freshly baked today.'}">
+                                Description
+                            </p>
+                        </div>
+                        <div class="product-card-footer">
+                            <span class="product-price"
+                                  th:text="${'₹' + #numbers.formatDecimal(product.price, 1, 2)}">₹3.50</span>
+                            <span class="product-badge">Available</span>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Visit / contact info -->
+    <section id="visit" class="section visit">
+        <div class="container-wide visit-grid">
+            <div>
+                <span class="section-label">Come See Us</span>
+                <h2>Visit the Bakery</h2>
+                <p>Stop by for a warm welcome and the smell of fresh bread.</p>
+            </div>
+            <div class="visit-details">
+                <div class="visit-item">
+                    <strong>📍 Address</strong>
+                    <p>Beside Union Bank, Pedakurapadu, Palnadu District, AP</p>
+                </div>
+                <div class="visit-item">
+                    <strong>🕐 Hours</strong>
+                    <p>Mon–Fri: 7am – 9pm<br>Sat–Sun: 8am – 9pm</p>
+                </div>
+                <div class="visit-item">
+                    <strong>📞 Contact</strong>
+                    <p>(+91)-8008583700<br>hannu5f1@gmail.com</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <div class="container-wide footer-inner">
+            <p>&copy; 2024 King's Bakery. All rights reserved.</p>
+            <p class="footer-tagline">Baked fresh. Served with a smile.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
