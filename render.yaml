@@ -6,4 +6,4 @@ services:
     branch: main
     dockerfilePath: Dockerfile
     autoDeploy: true
-    startCommand: java -jar target/mybakery-1.0.0.jar
+    startCommand: java -jar app.jar
